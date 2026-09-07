@@ -124,7 +124,7 @@ package body Shading with SPARK_Mode => On is
             elsif Dist = 0.0 then
                return 1.0;
             else
-               return 1.0 / (1.0 + (Dist ** Falloff.Power));
+               return 1.0 / (1.0 + Real_Math."**" (Dist, Real (Falloff.Power)));
             end if;
       end case;
    end Compute_Falloff;
@@ -162,8 +162,8 @@ package body Shading with SPARK_Mode => On is
      (A, B, C : Color_RGB;
       W       : Barycentric_Weights) return Color_RGB
    is
-      R : constant Real := (A.R * W.U) + (B.R * W.V) + (C.R * W.W);
-      G : constant Real := (A.G * W.U) + (B.G * W.V) + (C.G * W.W);
+      R     : constant Real := (A.R * W.U) + (B.R * W.V) + (C.R * W.W);
+      G     : constant Real := (A.G * W.U) + (B.G * W.V) + (C.G * W.W);
       B_Val : constant Real := (A.B * W.U) + (B.B * W.V) + (C.B * W.W);
    begin
       return Make_Color (R, G, B_Val);
@@ -240,7 +240,7 @@ package body Shading with SPARK_Mode => On is
                         Spec_Factor : Real := 0.0;
                      begin
                         if R_Dot_V > 0.0 then
-                           Spec_Factor := R_Dot_V ** Mat.Shininess;
+                           Spec_Factor := Real_Math."**" (R_Dot_V, Real (Mat.Shininess));
                         end if;
 
                         declare
@@ -258,7 +258,7 @@ package body Shading with SPARK_Mode => On is
 
             when Point_Light =>
                declare
-                  To_Light : constant Vector_3D     := L.Position - Position;
+                  To_Light : constant Vector_3D      := L.Position - Position;
                   Dist     : constant Distance_Value := Magnitude (To_Light);
                begin
                   if Dist > 0.0 then
@@ -285,7 +285,7 @@ package body Shading with SPARK_Mode => On is
                               Spec_Factor : Real := 0.0;
                            begin
                               if R_Dot_V > 0.0 then
-                                 Spec_Factor := R_Dot_V ** Mat.Shininess;
+                                 Spec_Factor := Real_Math."**" (R_Dot_V, Real (Mat.Shininess));
                               end if;
 
                               declare
@@ -321,7 +321,8 @@ package body Shading with SPARK_Mode => On is
                         --  Inside spotlight cone
                         if Cos_Angle >= Cos_Cutoff and then Cos_Angle > 0.0 then
                            declare
-                              Spot_Effect : constant Real := Cos_Angle ** L.Spot_Dropoff_Exp;
+                              Spot_Effect : constant Real :=
+                                Real_Math."**" (Cos_Angle, L.Spot_Dropoff_Exp);
                               N_Dot_L     : constant Real :=
                                 Real'Max (0.0, Dot_Product (N, Light_Dir));
                               Atten       : constant Attenuation_Val :=
@@ -343,7 +344,7 @@ package body Shading with SPARK_Mode => On is
                                     Spec_Factor : Real := 0.0;
                                  begin
                                     if R_Dot_V > 0.0 then
-                                       Spec_Factor := R_Dot_V ** Mat.Shininess;
+                                       Spec_Factor := Real_Math."**" (R_Dot_V, Real (Mat.Shininess));
                                     end if;
 
                                     declare
@@ -386,7 +387,7 @@ package body Shading with SPARK_Mode => On is
       return Evaluate_Lighting
         (Position => Centroid,
          Normal   => Face_Norm,
-         View_Pos => View_Pos,
+         View_Pos => ViewPos => View_Pos,
          Mat      => Mat,
          Lights   => Lights);
    end Shade_Flat;
