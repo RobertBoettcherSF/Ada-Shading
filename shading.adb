@@ -387,7 +387,7 @@ package body Shading with SPARK_Mode => On is
       return Evaluate_Lighting
         (Position => Centroid,
          Normal   => Face_Norm,
-         View_Pos => ViewPos => View_Pos,
+         View_Pos => View_Pos,
          Mat      => Mat,
          Lights   => Lights);
    end Shade_Flat;
