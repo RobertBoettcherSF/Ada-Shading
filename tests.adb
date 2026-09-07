@@ -333,7 +333,7 @@ begin
    end;
 
    --  ===================================================================
-   --  TEST 11 -- Deferred Shading Depth Buffering (Z-culling)
+   --  TEST 11 -- Deferred Shading Depth Overwrite
    --  ===================================================================
    Put_Line ("TEST 11 -- Deferred Shading Depth Overwrite");
    declare
@@ -370,7 +370,7 @@ begin
    end;
 
    --  ===================================================================
-   --  TEST 12 -- Edge Cases & Exception Handling: Degenerate Geometry
+   --  TEST 12 -- Edge Cases: Degenerate Geometry
    --  ===================================================================
    Put_Line ("TEST 12 -- Edge Cases: Degenerate Geometry");
    declare
@@ -382,7 +382,9 @@ begin
    begin
       begin
          declare
+            pragma Warnings (Off, "variable ""Unused_N"" is not referenced");
             Unused_N : constant Vector_3D := Triangle_Face_Normal (Collinear_Tri);
+            pragma Warnings (On, "variable ""Unused_N"" is not referenced");
          begin
             Check ("12.1 Degenerate triangle normal calculation", False);
          end;
@@ -398,7 +400,9 @@ begin
       begin
          begin
             declare
+               pragma Warnings (Off, "variable ""Unused_Norm"" is not referenced");
                Unused_Norm : constant Vector_3D := Normalize ((0.0, 0.0, 0.0));
+               pragma Warnings (On, "variable ""Unused_Norm"" is not referenced");
             begin
                Check ("12.2 Normalizing zero vector", False);
             end;
@@ -415,7 +419,9 @@ begin
       begin
          begin
             declare
+               pragma Warnings (Off, "variable ""Unused_W"" is not referenced");
                Unused_W : constant Barycentric_Weights := Make_Barycentric (0.0, 0.0, 0.0);
+               pragma Warnings (On, "variable ""Unused_W"" is not referenced");
             begin
                Check ("12.3 Zero sum barycentric weights", False);
             end;
@@ -448,13 +454,12 @@ begin
       Check ("13.2 Barycentric normalization preserves partition of unity",
              Approx (W.U + W.V + W.W, 1.0));
       Check ("13.3 Reflect vector on pure normal incident inverts direction",
-             declare
+             (declare
                 Inc  : constant Vector_3D := (0.0, 0.0, 1.0);
                 Norm : constant Vector_3D := (0.0, 0.0, 1.0);
                 Ref  : constant Vector_3D := Reflect (Inc, Norm);
-             begin
-                Approx (Ref.X, 0.0) and Approx (Ref.Y, 0.0) and Approx (Ref.Z, 1.0)
-             end);
+              begin
+                Approx (Ref.X, 0.0) and Approx (Ref.Y, 0.0) and Approx (Ref.Z, 1.0)));
    end;
 
    --  ===================================================================
