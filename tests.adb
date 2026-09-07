@@ -439,7 +439,7 @@ begin
    --  ===================================================================
    Put_Line ("TEST 13 -- Invariants & Empty Lights Edge Case");
    declare
-      Empty_Lights : constant Light_Array (1 .. 0) := (others => <>);
+      Empty_Lights : constant Light_Array (1 .. 0) := [others => <>];
       Col_Empty    : constant Color_RGB := Evaluate_Lighting
         (Position => (0.0, 0.0, 0.0),
          Normal   => (0.0, 0.0, 1.0),
